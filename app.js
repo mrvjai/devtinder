@@ -3,17 +3,17 @@ const app = express();
 const tes = require('./src/tes')
 
 
-app.use("/hi",(req,res)=>{
-res.send("hi vijay good to see you")
+app.get('/user',(req,res)=>{
+    res.send("Data fetched successfully!!")
 })
 
-app.use("/hello",(req,res)=>{
-    res.send("hi hello")
-    })
+app.post('/user',(req,res)=>{
+    res.send("Data inserted successfully!!")
+})
 
-    app.use("/namaste",(req,res)=>{
-        res.send("hi hello namaste vankam")
-        })
+app.delete('/user',(req,res)=>{
+    res.send("Data deleted successfully!!")
+})
 
 app.listen(7777,()=>{
     console.log("app is listening on port:7777")
