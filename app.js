@@ -1,20 +1,34 @@
 const express = require('express');
 const app = express();
-const tes = require('./src/tes')
+
+app.get('/user',
+    [
+    (req, res, next) => {
+        console.log("one")
+        res.send("hello")
+        next();
+    },
+    (req, res, next) => {
+        console.log("two")
+       next();
+    },
+    (req, res, next) => {
+        console.log("three")
+        next();
+    },
+    (req, res, next) => {
+        console.log("four")
+        next();
+    },
+    (req, res, next) => {
+        console.log("five")
+        res.send(`Hello world `)
+    }]
+)
 
 
-app.get('/user',(req,res)=>{
-    res.send("Data fetched successfully!!")
-})
 
-app.post('/user',(req,res)=>{
-    res.send("Data inserted successfully!!")
-})
 
-app.delete('/user',(req,res)=>{
-    res.send("Data deleted successfully!!")
-})
-
-app.listen(7777,()=>{
+app.listen(7777, () => {
     console.log("app is listening on port:7777")
 })
