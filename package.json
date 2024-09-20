@@ -1,0 +1,15 @@
+{
+  "name": "tinderdev",
+  "version": "1.0.0",
+  "description": "app for devs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "author": "vijay",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}
