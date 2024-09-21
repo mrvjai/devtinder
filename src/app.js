@@ -7,15 +7,64 @@ app.use(express.json())
 
 
 app.post('/signup', async (req, res) => {
-    console.log(req.body)
-    const userData = new userModel(req.body)
+    const userData =req.body.mail;
 
-    await userData.save();
+try{
+    const res1=await userModel.find({mail:userData})
+if(res1.length>0){
+    return res.send("user exist with this mailid")
+}
+ 
 
-    res.send("data saved succesfully")
+    try {
+        const userData = new userModel(req.body)
+
+        await userData.save();
+
+        return res.send("data saved succesfully")
+    }
+    catch (err) {
+        res.status(500).send("error in daving data")
+    }}
+    catch (err) {
+        res.status(500).send("error in fetching data")
+    }  
 
 })
 
+//find by mail id
+app.get('/fetch', async (req, res) => {
+    console.log(req.query)
+    try {
+
+        const userEmail = req.body.mail;
+        if (!userEmail) {
+            res.send("please give mail")
+        }
+        const resp = await userModel.findOne({ mail: userEmail })
+        if (resp.length === 0) {
+            res.send("mail not found")
+        }
+        res.send(resp)
+    }
+    catch (err) {
+        res.status(404).send("error in daving data")
+    } 
+
+})
+
+// find all users
+app.get('/fetch/all',async (req,res)=>{
+    try{
+    const userEmail = req.body.mail;
+    const resp=await userModel.find({mail:userEmail},{firstName:1,lastName:1})
+    res.send(resp)
+    }
+    catch(err){
+        res.send("err")
+    }
+
+})
 
 DB()
     .then(() => {
