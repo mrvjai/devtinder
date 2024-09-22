@@ -24,10 +24,11 @@ if(res1.length>0){
         return res.send("data saved succesfully")
     }
     catch (err) {
+        console.log("error:",err)
         res.status(500).send("error in daving data")
     }}
     catch (err) {
-        res.status(500).send("error in fetching data")
+        res.status(500).send("error in checking  data validation")
     }  
 
 })
@@ -56,8 +57,8 @@ app.get('/fetch', async (req, res) => {
 // find all users
 app.get('/fetch/all',async (req,res)=>{
     try{
-    const userEmail = req.body.mail;
-    const resp=await userModel.find({mail:userEmail},{firstName:1,lastName:1})
+    const userEmail = req.body.age;
+    const resp=await userModel.find({age:userEmail},{firstName:1,lastName:1})
     res.send(resp)
     }
     catch(err){
@@ -75,12 +76,10 @@ app.delete('/deleteuser',async (req,res)=>{
     const resp2=await userModel.find({mail:userEmail});
     console.log(resp2)
     if(resp2.length === 0){
-        res.send("user not found")
-        await userModel.deleteOne({mail:userEmail})
-        res.send("ddleted user")
+        res.send("user not found");
     }
     else{
-        await userModel.deleteMany({mail:userEmail})
+        await userModel.deleteOne({mail:userEmail})
         res.send("ddleted user")
     }
     }
@@ -94,7 +93,7 @@ app.delete('/deleteuser',async (req,res)=>{
 app.put('/userupdate',async(req,res)=>{
     
     const det = req.body.mail;
-    const det2 = req.body.updatedemail;
+    const det2 = req.body.firstName;
     console.log(det)
     try{
         const resp = await userModel.find({mail : det})
@@ -103,7 +102,7 @@ app.put('/userupdate',async(req,res)=>{
             res.send("user not found")
         }
         else{
-            await userModel.updateMany({mail:det},{$set:{mail:det2}})
+            await userModel.updateMany({mail:det},{$set:{firstName:det2,lastName:"Houding"}},{runValidators:true},{ordered:false})
             res.send("user updated")
         }
     }
