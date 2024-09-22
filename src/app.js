@@ -66,6 +66,53 @@ app.get('/fetch/all',async (req,res)=>{
 
 })
 
+
+
+app.delete('/deleteuser',async (req,res)=>{
+    const userEmail = req.body.mail;
+    console.log(userEmail)
+    try{
+    const resp2=await userModel.find({mail:userEmail});
+    console.log(resp2)
+    if(resp2.length === 0){
+        res.send("user not found")
+        await userModel.deleteOne({mail:userEmail})
+        res.send("ddleted user")
+    }
+    else{
+        await userModel.deleteMany({mail:userEmail})
+        res.send("ddleted user")
+    }
+    }
+    catch(err){
+    res.status(500).send("porblem deleting user")
+    }
+})
+
+
+
+app.put('/userupdate',async(req,res)=>{
+    
+    const det = req.body.mail;
+    const det2 = req.body.updatedemail;
+    console.log(det)
+    try{
+        const resp = await userModel.find({mail : det})
+        console.log(resp)
+        if(resp.length === 0){
+            res.send("user not found")
+        }
+        else{
+            await userModel.updateMany({mail:det},{$set:{mail:det2}})
+            res.send("user updated")
+        }
+    }
+    catch(err){
+        console.log(err)
+        res.status(500).send("error in data updation")
+    }
+})
+
 DB()
     .then(() => {
         console.log("connected succesfully");
