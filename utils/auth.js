@@ -7,7 +7,7 @@ let {token} = decode;
 if (!token) {
     return res.status(401).send("Token not found");
 }
-const verify = await jwt.verify(token,"Vijaytcs@3");
+const verify = await jwt.verify(token,"DEV@1234");
 console.log(verify)
 
 const {_id} = verify;

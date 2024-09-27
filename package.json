@@ -4,7 +4,7 @@
   "description": "app for devs",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "node --inspect app.js",
     "dev": "nodemon src/app.js"
   },
   "author": "vijay",
