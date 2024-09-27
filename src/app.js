@@ -4,8 +4,11 @@ const DB = require('./config/datanase');
 const userModel = require('./models/users')
 const { userValidation } = require('../utils/validator')
 const bcrypt = require('bcrypt')
+const cookies = require('cookie-parser')
+const jwt = require('jsonwebtoken')
+const authentication = require('..//utils/auth')
 app.use(express.json())
-
+app.use(cookies())
 
 app.post('/signup', async (req, res) => {
 
@@ -45,14 +48,16 @@ app.post('/login', async (req, res) => {
         }
         const isPassword = await bcrypt.compare(password, user.password)
 
-        if (isPassword === false) {
-            throw new Error("password is in correct")
-        }
-        else {
+        if (isPassword) {
+            let token1 = await jwt.sign({ _id: user._id }, "Vijaytcs@3",{expiresIn: "180000s"})
+            console.log(token1)
+            res.cookie("token", token1,{expires:new Date(Date.now()+5*60000)})
             res.send("Login success!!!")
         }
+        else {
+            throw new Error("password is in correct")
+        }
     }
-
     catch (err) {
         res.status(400).send("invalid details" + err);
     }
@@ -60,96 +65,27 @@ app.post('/login', async (req, res) => {
 })
 
 
-
-
-
-
-
-//find by mail id
-app.get('/fetch', async (req, res) => {
-    console.log(req.query)
+app.get('/profile', authentication,async (req, res) => {
     try {
-
-        const userEmail = req.body.mail;
-        if (!userEmail) {
-            res.send("please give mail")
-        }
-        const resp = await userModel.findOne({ mail: userEmail })
-        if (resp.length === 0) {
-            res.send("mail not found")
-        }
-        res.send(resp)
+   
+        let data = req.data;
+        // Send success response
+        res.send(data);
     }
     catch (err) {
-        res.status(404).send("error in daving data")
-    }
-
-})
-
-// find all users
-app.get('/fetch/all', async (req, res) => {
-    try {
-        const userEmail = req.body.age;
-        const resp = await userModel.find({ age: userEmail }, { firstName: 1, lastName: 1 })
-        res.send(resp)
-    }
-    catch (err) {
-        res.send("err")
-    }
-
-})
-
-
-
-app.delete('/deleteuser', async (req, res) => {
-    const userEmail = req.body.mail;
-    try {
-        const resp2 = await userModel.find({ mail: userEmail });
-        console.log(resp2)
-        if (resp2.length === 0) {
-            res.send("user not found");
-        }
-        else {
-            await userModel.deleteOne({ mail: userEmail })
-            res.send("ddleted user")
-        }
-    }
-    catch (err) {
-        res.status(500).send("porblem deleting user")
+        res.status(400).send("invalid details" + err);
     }
 })
 
 
+app.post('/connectionrequest',authentication,async(req,res)=>{
+let userr = req.data;
+console.log("connection request sent ");
 
-app.patch('/userupdate/:userId', async (req, res) => {
-    const userid = req.params?.userId;
-    const det2 = req.body;
-    try {
-        const updateDetails = ["firstName", "lastName", "age", "password", "skills", "gender"];
-        const info = Object.keys(det2).every(k => updateDetails.includes(k))
-        console.log(info)
-        if (!info) {
-            throw new Error("the mail can't able to change")
-        }
-        if (det2.skills.length > 10) {
-            throw new Error("the skills not more than 10")
+res.send(`connection reqsent by ${userr.firstName}` )
 
-        }
-        const resp = await userModel.find({ _id: userid })
-        console.log(resp)
-        if (resp.length === 0) {
-            res.send("user not found")
-        }
-        else {
-            await userModel.findByIdAndUpdate({ _id: userid }, det2)
-            res.send("user updated")
-        }
-    }
-    catch (err) {
-        console.log(err)
-        res.status(500).send("error in data updation" + err)
-    }
 })
+
 
 DB()
     .then(() => {

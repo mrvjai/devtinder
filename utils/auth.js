@@ -1,23 +1,27 @@
-const auth=(req,res,next)=>{
-    const token = 179979706;   //req.body.token
-    const Authorised = token === 1779706
-    if(!Authorised){
-        res.send("user is not authorsed")
-    }
-    else{
-        next();
-    }
+const jwt = require('jsonwebtoken')
+const users = require('..//src//models/users')
+const authentication_use = async(req,res,next) =>{
+try{
+let decode = req.cookies;
+let {token} = decode;
+if (!token) {
+    return res.status(401).send("Token not found");
+}
+const verify = await jwt.verify(token,"Vijaytcs@3");
+console.log(verify)
+
+const {_id} = verify;
+console.log(_id)
+const data = await users.findOne({_id:_id})
+if(!data){
+    throw new Error("password is in correct")
+}
+req.data = data;
+next()}
+catch(err){
+    res.status(400).send("error : "+err)
 }
 
-const validation=(req,res,next)=>{
-    const passwd = "Adsdsd";   //req.body.token
-    const validated = passwd === "Adsdsd"
-    if(!validated){
-        res.send("user is not validated")
-    }
-    else{
-        next();
-    }
 }
 
-module.exports = {auth, validation}
+module.exports = authentication_use;
