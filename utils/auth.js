@@ -14,7 +14,7 @@ const {_id} = verify;
 console.log(_id)
 const data = await users.findOne({_id:_id})
 if(!data){
-    throw new Error("password is in correct")
+    throw new Error("Access denied")
 }
 req.data = data;
 next()}

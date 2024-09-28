@@ -30,6 +30,36 @@ if(age < 18){
 }
 
 
+const validateEditReqData=(req)=>{
+try{
+const editAllowed = ["firstName","lastName","age","skills","gender"]
+let isvalid = Object.keys(req.body).every(x => editAllowed.includes(x));
+return isvalid;
+}
+catch(err){
+throw new Error("error ::"+err)
+}
+
+}
+
+
+
+const validateUpdatedData = (req)=>{
+
+const {firstName,lastName,age,skills,gender} = req.body;
+
+if((firstName && firstName.length >10)|| (lastName && lastName.length>10)){
+    throw new Error("first name or last name length not more than 10")
+}
+if(skills && skills.length >=5){
+    throw new Error("skills not more than 5")
+
+}
+
+
+
+}
+
 module.exports = {
-    userValidation
+    userValidation,validateEditReqData,validateUpdatedData
 }
