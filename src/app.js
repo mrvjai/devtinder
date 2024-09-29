@@ -10,19 +10,21 @@ const authentication = require('..//utils/auth')
 const authRouter = require('./routers/auth');
 const profileRouter = require('./routers/profile');
 const requestRouter = require('./routers/request');
+const userRouter = require('./routers/user')
 
 app.use(express.json())
 app.use(cookies())
 
-app.use('/',authRouter)
-app.use('/',profileRouter)
-app.use('/',requestRouter)
+app.use('/', authRouter)
+app.use('/', profileRouter)
+app.use('/', requestRouter)
+app.use('/', userRouter)
 ///CONNECTIONREQUEST
-app.post('/connectionrequest',authentication,async(req,res)=>{
-let userr = req.data;
-console.log("connection request sent ");
+app.post('/connectionrequest', authentication, async (req, res) => {
+    let userr = req.data;
+    console.log("connection request sent ");
 
-res.send(`connection reqsent by ${userr.firstName}` )
+    res.send(`connection reqsent by ${userr.firstName}`)
 
 })
 

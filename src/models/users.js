@@ -65,17 +65,17 @@ const userSchema = new mongoose.Schema({
 )
 
 //dont use arrow functions
-userSchema.methods.passwordcheck= async function(passwordByUser){
-const user = this;
-const check = await bcrypt.compare(passwordByUser,user.password)
+userSchema.methods.passwordcheck = async function (passwordByUser) {
+    const user = this;
+    const check = await bcrypt.compare(passwordByUser, user.password)
 
-return check;
+    return check;
 
 }
 
 
-userSchema.methods.JWTcheck=async function(userid){
-    const token = await jwt.sign({_id:userid},"DEV@1234")
+userSchema.methods.JWTcheck = async function (userid) {
+    const token = await jwt.sign({ _id: userid }, "DEV@1234")
     return token;
 }
 

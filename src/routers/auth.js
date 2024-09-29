@@ -3,7 +3,6 @@ const { userValidation } = require('../../utils/validator')
 const bcrypt = require('bcrypt')
 const cookies = require('cookie-parser')
 const jwt = require('jsonwebtoken')
-const authentication_use  = require('../../utils/auth')
 const validator = require('validator')
 const express = require('express');
 const authRouter = express.Router();
@@ -50,7 +49,7 @@ authRouter.post('/login', async (req, res) => {
         if (isPassword) {
             let token1 = await user.JWTcheck(user._id)
             console.log(token1)
-            res.cookie("token", token1,{expires:new Date(Date.now()+5*60000)})
+            res.cookie("token", token1, { expires: new Date(Date.now() + 5 * 60000) })
             res.send("Login success!!!")
         }
         else {
@@ -67,8 +66,8 @@ authRouter.post('/login', async (req, res) => {
 //logout
 authRouter.post('/logout', async (req, res) => {
 
-    try{
-        res.cookie("token",null,{expires : new Date(Date.now())},)
+    try {
+        res.cookie("token", null, { expires: new Date(Date.now()) },)
         res.send("logged out succesfully")
     }
     catch (err) {
@@ -78,30 +77,6 @@ authRouter.post('/logout', async (req, res) => {
 })
 
 
-//change pasword
 
-authRouter.patch('/changepassword',authentication_use,async(req,res)=>{
-try{
-console.log("started")
-const {oldPassword,newPassword}= req.body;
-const newPassCheck = validator.isStrongPassword(newPassword);
-if(!newPassCheck){
-    throw new Error("password is not strong")
-}
-let userInfo = req.data;
-let checkOld = await userInfo.passwordcheck(oldPassword)
-if(!checkOld){
-    throw new Error("Password enterd is not matched try again")
-}
-const newPass = await bcrypt.hash(newPassword,10);
-userInfo.password=newPass;
-await userInfo.save();
-res.status(200).send(`${userInfo.firstName}, your password updated successfully`);
-}
-catch(err){
-    res.status(400).send("main Password enterd is not matched try again "+err)
-}
-
-})
 
 module.exports = authRouter;
